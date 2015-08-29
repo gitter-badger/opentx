@@ -101,6 +101,8 @@ void menuStatisticsView(uint8_t event)
 #define MENU_DEBUG_Y_STACK    (5*FH)
 #define MENU_DEBUG_Y_RTOS     (6*FH)
 
+uint32_t optbytes = 0;
+
 void menuStatisticsDebug(uint8_t event)
 {
   TITLE(STR_MENUDEBUG);
@@ -123,6 +125,7 @@ void menuStatisticsDebug(uint8_t event)
       sessionTimer = 0;
       killEvents(event);
       AUDIO_KEYPAD_UP();
+      optbytes = FLASH->OPTCR;
       break;
     case EVT_KEY_FIRST(KEY_ENTER):
 #if defined(LUA)
@@ -181,6 +184,10 @@ void menuStatisticsDebug(uint8_t event)
   lcd_outdezAtt(lcdLastPos, MENU_DEBUG_Y_RTOS, stack_free(2), UNSIGN|LEFT);
   lcd_putsAtt(lcdLastPos+2, MENU_DEBUG_Y_RTOS+1, "[I]", SMLSIZE);
   lcd_outdezAtt(lcdLastPos, MENU_DEBUG_Y_RTOS, stack_free(255), UNSIGN|LEFT);
+
+
+  lcd_putsLeft(MENU_DEBUG_Y_STACK, "OPTCR");
+  lcd_outhex4(MENU_DEBUG_COL1_OFS, MENU_DEBUG_Y_STACK, optbytes, LEFT);
 
   lcd_puts(3*FW, 7*FH+1, STR_MENUTORESET);
   lcd_status_line();
